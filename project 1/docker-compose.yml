@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  cve-platform:
+    build: .
+    container_name: cve_etl_eda_app
+    ports:
+      - "8501:8501"
+    environment:
+      - DATABASE_URL=sqlite:////app/db/cve_database.db
+      - NVD_API_KEY=${NVD_API_KEY:-}
+    volumes:
+      - ./data:/app/data
+      - ./db:/app/db
+    restart: unless-stopped
+
+  # Optional MySQL database service (if MySQL is preferred over SQLite)
+  # To use MySQL:
+  # 1. Uncomment mysql service below
+  # 2. Update cve-platform DATABASE_URL to: mysql+pymysql://cve_user:cve_pass@mysql:3306/cve_db
+  #
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: cve_mysql_db
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: cve_db
+  #     MYSQL_USER: cve_user
+  #     MYSQL_PASSWORD: cve_pass
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+
+# volumes:
+#   mysql_data:
